@@ -2,6 +2,8 @@
 
 import java.io.IOException;
 import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -30,6 +32,9 @@ public class CheckAnswers extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		//response.getWriter().append("Served at: ").append(request.getContextPath());
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.print(df.format(System.currentTimeMillis()));
+		System.out.println("in CheckAnswers");
 		String answer = request.getParameter("answers");
 		response.setContentType("text/html;charset=utf-8");
 		response.getWriter().append(getResult(answer));

@@ -1,30 +1,27 @@
 
 
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
- * Servlet implementation class Exercise
+ * Servlet implementation class GetAnswers
  */
-@WebServlet("/Exercise")
-public class Exercise extends HttpServlet {
+@WebServlet("/GetAnswers")
+public class GetAnswers extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public Exercise() {
+    public GetAnswers() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -34,11 +31,11 @@ public class Exercise extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		System.out.print(df.format(System.currentTimeMillis()));
-		System.out.println("in Exercise");
-		doPost(request, response);
+		System.out.println("in GetAnswers");
+		response.setContentType("text/html;charset=utf-8");
+		response.getWriter().append(getAnswers());
 	}
 
 	/**
@@ -46,27 +43,20 @@ public class Exercise extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		//doGet(request, response);
-		response.setContentType("text/html;charset=utf-8");
-		response.getWriter().append(getQues());
+		doGet(request, response);
 	}
-	
-	private String getQues() {
-		String sql = "select text,answerA,answerB,answerC,answerD from questions;";
-		JSONArray jsonArray = new JSONArray();
+
+	public String getAnswers() {
+		String sql = "select answer from questions;";
 		
 		DBUtil myDbUtil = new DBUtil();
 		myDbUtil.connect();
 		ResultSet rs = myDbUtil.query(sql);
+		StringBuilder answer = new StringBuilder();
+		
 		try {
 			while (rs.next()) {
-				JSONObject jsonObject = new JSONObject();
-				jsonObject.put("text", rs.getString("text"));
-				jsonObject.put("answerA", rs.getString("answerA"));
-				jsonObject.put("answerB", rs.getString("answerB"));
-				jsonObject.put("answerC", rs.getString("answerC"));
-				jsonObject.put("answerD", rs.getString("answerD"));
-				jsonArray.add(jsonObject);
+				answer.append(rs.getString("answer"));
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -74,7 +64,7 @@ public class Exercise extends HttpServlet {
 		} finally {
 			myDbUtil.closeConnect();
 		}
-		return jsonArray.toString();
+		
+		return answer.toString();
 	}
-
 }
